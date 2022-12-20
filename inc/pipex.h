@@ -1,35 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/14 17:17:34 by psimarro          #+#    #+#             */
+/*   Updated: 2022/12/18 21:42:17 by psimarro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "libft.h"
+# include "../Libft/inc/libft.h"
 # include <fcntl.h>
 # include <readline/readline.h>
+# include <sys/wait.h>
 
-typedef struct s_datas
+typedef struct s_qsplit
 {
-	char	**envp;
-	char	**av;
+	int	end;
+	int	start;
+}	t_qsplit;
 
-	int		ac;
-	int		outfile_fd;
-	int		infile_fd;
-	int		p_fd[2];
+char	*f_pathes(char *cmd, char **envm);
+void	command(char *argv, char **envm);
+int		open_file(char *argv, int i);
+char	**ft_q_split(char const *s, char c);
 
-	t_bool	is_heredoc;
-}	t_datas;
-
-/* utils.c */
-void	error(const char *error);
-t_datas	init_datas(int ac, char **av, char **envp);
-
-/* parse_env_cmd.c */
-char	**get_env_paths(char **envp);
-char	*get_binary(char *cmd, char **env_parsed);
-
-/* execution.c */
-void	execute_commands(t_datas *datas);
-
-/* heredoc.c */
-void	heredoc(t_datas *datas, char *limiter);
+//errors
+void	arg_err(void);
+void	error_cmd(void);
+void	error_file(void);
+void	error_premission(void);
+void	error_pipe(void);
+void	error_pid(void);
+void	ft_perror(char *str);
 
 #endif

@@ -1,78 +1,107 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/14 17:17:18 by psimarro          #+#    #+#             */
+/*   Updated: 2022/12/18 21:56:50 by psimarro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/pipex.h"
 
-static void	main_execution(char *av, char **envp)
+void	parent_process_hd(int fd[2])
 {
-	char	**env_paths;
-	char	**cmd;
-	char	*binary;
+	close(fd[1]);
+	dup2(fd[0], 0);
+	wait(NULL);
+}
 
-	cmd = ft_split(av, " ");
-	if (!cmd)
-		ft_error(NULL, (void **)cmd, NULL, "ft_split failed or "
-			"error occured getting command or command options");
-	env_paths = get_env_paths(envp);
-	binary = get_binary(cmd[0], env_paths);
-	ft_free_dbl_array((void **)env_paths, 0);
-	if (!binary)
-		ft_error(NULL, (void **)env_paths, NULL, "An error occured getting "
-			"binary file");
-	if (execve(binary, cmd, envp) == -1)
+void	child_process(char *argv, char **envm)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	if (pipe(fd) == -1)
+		error_pipe();
+	pid = fork();
+	if (pid == -1)
+		error_pid();
+	if (pid == 0)
 	{
-		wrfree(binary);
-		ft_free_dbl_array((void **)env_paths, 0);
-		ft_free_dbl_array((void **)cmd, 0);
-		error("Error");
+		close(fd[0]);
+		dup2(fd[1], 1);
+		command(argv, envm);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], 0);
+		waitpid(pid, NULL, 0);
 	}
 }
 
-static void	child(char *cmd, char **envp, int *fd_pipe)
+void	here_doc(char *limiter, int argc)
 {
-	if (close(fd_pipe[0]) == -1)
-		error("Error");
-	if (dup2(fd_pipe[1], STDOUT_FILENO) == -1)
-		return (error("Error"));
-	main_execution(cmd, envp);
-}
+	pid_t	id;
+	int		fd[2];
+	char	*line;
 
-static void	parent(int *fd_pipe, pid_t *pid)
-{
-	if (close(fd_pipe[1]) == -1)
-		error("Error");
-	if (dup2(fd_pipe[0], STDIN_FILENO) == -1)
-		error("Error");
-	if (waitpid(*pid, NULL, 0) == -1)
-		error("Error");
-	if (close(fd_pipe[0]) == -1)
-		error("Error");
-	wrdestroy();
-}
-
-static void	pipex(char *cmd, char **envp)
-{
-	int		fd_pipe[2];
-	pid_t	pid;
-
-	if (pipe(fd_pipe) == -1)
-		error("Error");
-	pid = fork();
-	if (pid == -1)
-		error("Error");
-	if (pid == 0)
-		child(cmd, envp, fd_pipe);
+	if (argc < 6)
+		arg_err();
+	if (pipe(fd) == -1)
+		error_pipe();
+	id = fork();
+	if (id == 0)
+	{
+		close(fd[0]);
+		while (1)
+		{
+			line = get_next_line(0);
+			if (!line)
+				ft_perror("Error: get next line failed\n");
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+		}
+	}
 	else
-		parent(fd_pipe, &pid);
+		parent_process_hd(fd);
 }
 
-void	execute_commands(t_datas *datas)
+void	get_files(int argc)
+{
+	if (argc < 5)
+		arg_err();
+}
+
+int	main(int argc, char **argv, char **envm)
 {
 	int	i;
+	int	files[2];
 
-	i = 1;
-	if (datas->is_heredoc)
+	get_files(argc);
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+	{
+		i = 3;
+		files[1] = open_file(argv[argc - 1], 0);
+		here_doc(argv[2], argc);
+	}
+	else
+	{
 		i = 2;
-	while (++i < datas->ac - 2)
-		pipex(datas->av[i], datas->envp);
-	if (dup2(datas->outfile_fd, STDOUT_FILENO) == -1)
-		ft_error(NULL, NULL, NULL, "dup2 failed");
-	main_execution(datas->av[datas->ac - 2], datas->envp);
+		files[1] = open_file(argv[argc - 1], 1);
+		files[0] = open_file(argv[1], 2);
+		dup2(files[0], 0);
+	}
+	while (i < argc - 2)
+		child_process(argv[i++], envm);
+	dup2(files[1], 1);
+	command(argv[argc - 2], envm);
+	close(files[1]);
+	if (!(ft_strncmp(argv[1], "here_doc", 8) == 0))
+		close(files[0]);
+	return (0);
 }
