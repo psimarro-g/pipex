@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 16:37:55 by psimarro          #+#    #+#             */
-/*   Updated: 2022/11/08 20:15:03 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/02/06 10:36:04 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strtrim(char const *s1, char const *set);
 char			**ft_split(char const *s, char c);
+void			ft_free_split(char **p);
 char			*ft_trimf(const char *str, char *set);
 int				ft_nsep(char *str, char c);
 char			*ft_itoa(long long int n);

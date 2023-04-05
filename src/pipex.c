@@ -6,20 +6,20 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:17:18 by psimarro          #+#    #+#             */
-/*   Updated: 2022/12/18 21:56:50 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/02/06 09:09:00 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-void	parent_process_hd(int fd[2])
+static void	parent_process_hd(int fd[2])
 {
 	close(fd[1]);
 	dup2(fd[0], 0);
 	wait(NULL);
 }
 
-void	child_process(char *argv, char **envm)
+static void	child_process(char *argv, char **envm)
 {
 	pid_t	pid;
 	int		fd[2];
@@ -43,7 +43,7 @@ void	child_process(char *argv, char **envm)
 	}
 }
 
-void	here_doc(char *limiter, int argc)
+static void	here_doc(char *limiter, int argc)
 {
 	pid_t	id;
 	int		fd[2];
@@ -61,7 +61,7 @@ void	here_doc(char *limiter, int argc)
 		{
 			line = get_next_line(0);
 			if (!line)
-				ft_perror("Error: get next line failed\n");
+				ft_perror("Error: get next line failed\n", 0);
 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 				exit(EXIT_SUCCESS);
 			write(fd[1], line, ft_strlen(line));
@@ -71,9 +71,11 @@ void	here_doc(char *limiter, int argc)
 		parent_process_hd(fd);
 }
 
-void	get_files(int argc)
+static void	get_args(int argc, char **argv)
 {
 	if (argc < 5)
+		arg_err();
+	if (ft_strncmp(argv[1], "/dev/urandom", ft_strlen(argv[1])) == 0)
 		arg_err();
 }
 
@@ -82,7 +84,7 @@ int	main(int argc, char **argv, char **envm)
 	int	i;
 	int	files[2];
 
-	get_files(argc);
+	get_args(argc, argv);
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 	{
 		i = 3;

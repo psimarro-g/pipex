@@ -6,14 +6,14 @@
 #    By: psimarro <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/30 17:45:18 by psimarro          #+#    #+#              #
-#    Updated: 2022/12/14 18:13:33 by psimarro         ###   ########.fr        #
+#    Updated: 2023/02/06 10:46:02 by psimarro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
 CC = gcc 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address -glldb
 
 RM = rm -f
 
@@ -31,7 +31,7 @@ SRC = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c ft_memchr.c\
 	  ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c ft_lstlast.c\
 	  ft_lstmap.c ft_strchrs.c ft_itoa_base.c ft_is_pnt_or_hex.c ft_num_utils.c\
 	  ft_print_char.c ft_print_num.c ft_print_str.c ft_printf.c ft_utils_1.c ft_utils_2.c\
-	  ft_get_next_line_bonus.c
+	  ft_get_next_line_bonus.c ft_split_free.c
 
 OBJ_DIR = obj/
 OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))

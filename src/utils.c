@@ -6,11 +6,14 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:20:34 by psimarro          #+#    #+#             */
-/*   Updated: 2022/12/18 21:28:56 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/02/06 10:45:08 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
+#include <stdio.h>
+
+char	**ft_q_split(char const *s, char c);
 
 char	*f_pathes(char *cmd, char **envm)
 {
@@ -26,12 +29,16 @@ char	*f_pathes(char *cmd, char **envm)
 	i = 0;
 	while (paths[i])
 	{
-		part_path = ft_strjoin(paths[i], "/");
+		part_path = ft_strjoin(paths[i++], "/");
 		path = ft_strjoin(part_path, cmd);
-		free(part_path);
 		if (access(path, F_OK) == 0)
+		{
+			free(part_path);
+			ft_free_split(paths);
 			return (path);
-		i++;
+		}
+		free(part_path);
+		free(path);
 	}
 	return (0);
 }
@@ -40,20 +47,17 @@ void	command(char *argv, char **envm)
 {
 	char	**cmd;
 	char	*file_path;
-	int		i;
 
-	i = 0;
 	if (!*argv)
-		ft_perror("Empty command");
-	cmd = ft_split(argv, ' ');
+		ft_perror("Empty command", 0);
+	cmd = ft_q_split(argv, ' ');
 	if (!envm[0])
-		ft_perror("Environment error");
+		ft_perror("Environment error", 1);
 	file_path = f_pathes(cmd[0], envm);
 	if (execve(file_path, cmd, envm) == -1)
 		error_cmd();
-	while (cmd[i])
-		free(cmd[i++]);
-	free(cmd);
+	free(file_path);
+	ft_free_split(cmd);
 }
 
 int	open_file(char *argv, int i)
@@ -75,13 +79,13 @@ int	open_file(char *argv, int i)
 void	arg_err(void)
 {
 	perror("Error: Bad argument\n");
-	write(1, "input: ./pipex <file1> <cmd1> <cmd2> <...> file2\n", 49);
+	write(1, "input: ./pipex infile <cmd1> <cmd2> <...> outfile\n", 49);
 	write(1, "./pipex here_doc <LIMITER> <cmd> <cmd1> <...> file\n", 51);
 	exit(EXIT_SUCCESS);
 }
 
-void	ft_perror(char *str)
+void	ft_perror(char *str, int exit_code)
 {
 	perror(str);
-	exit(EXIT_FAILURE);
+	exit(exit_code);
 }

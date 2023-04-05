@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:17:34 by psimarro          #+#    #+#             */
-/*   Updated: 2022/12/18 21:42:17 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/01/31 13:53:26 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_qsplit
 char	*f_pathes(char *cmd, char **envm);
 void	command(char *argv, char **envm);
 int		open_file(char *argv, int i);
-char	**ft_q_split(char const *s, char c);
 
 //errors
 void	arg_err(void);
@@ -36,6 +35,6 @@ void	error_file(void);
 void	error_premission(void);
 void	error_pipe(void);
 void	error_pid(void);
-void	ft_perror(char *str);
+void	ft_perror(char *str, int exit_code);
 
 #endif

@@ -6,13 +6,13 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 20:17:59 by psimarro          #+#    #+#             */
-/*   Updated: 2022/12/18 18:27:19 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/02/06 09:22:29 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-int	  ft_narg(char const *str, char c)
+int	ft_narg(char const *str, char c)
 {
 	int		i;
 
@@ -27,11 +27,12 @@ int	  ft_narg(char const *str, char c)
 
 char	*get_quotes(char const *str, t_qsplit *t, char c)
 {
-	int end;
+	int	end;
 
 	end = t->end;
-	if (str[end++] == '\'')
+	if (str[end] == '\'')
 	{
+		end++;
 		while (str[end] && str[end] != '\'')
 			end++;
 	}
@@ -57,28 +58,27 @@ char	**ft_q_split(char const *s, char c)
 {
 	char		**ret;
 	int			i;
-	t_qsplit	*t;
+	t_qsplit	t;
 
 	if (!s)
 		return (0);
 	i = 0;
-	t = (t_qsplit *)ft_calloc(1, sizeof(t_qsplit));
 	ret = ft_calloc(sizeof(char *), ft_narg(s, c) + 2);
 	if (!ret)
 		return (0);
-	t->end = 0;
-	while (s[t->end])
+	t.end = 0;
+	while (s[t.end])
 	{
-		t->start = t->end;
-		while (s[t->end] && s[t->end] != c && s[t->end] != '\'' && s[t->end] != '\"')
-			t->end++;
-        if ((s[t->end] == '\'' || s[t->end] == '\"'))
-			get_quotes(s, t, c);
-        ret[i++] = ft_substr(s, t->start, t->end - t->start);
-		if (s[t->end])
-			t->end++;
-		if (s[t->end] == c)
-			t->end++;
+		t.start = t.end;
+		while (s[t.end] && s[t.end] != c && !ft_strchr("\'\"", s[t.end]))
+			t.end++;
+		if ((s[t.end] == '\'' || s[t.end] == '\"'))
+			get_quotes(s, &t, c);
+		ret[i++] = ft_substr(s, t.start, t.end - t.start);
+		if (s[t.end])
+			t.end++;
+		while (s[t.end] && s[t.end] == c)
+			t.end++;
 	}
 	return (ret);
 }

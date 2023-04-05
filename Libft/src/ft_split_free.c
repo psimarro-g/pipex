@@ -1,43 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   ft_split_free.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/14 17:19:25 by psimarro          #+#    #+#             */
-/*   Updated: 2023/01/31 13:46:25 by psimarro         ###   ########.fr       */
+/*   Created: 2023/02/06 10:30:55 by psimarro          #+#    #+#             */
+/*   Updated: 2023/02/06 10:44:10 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include <libft.h>
 
-void	error_cmd(void)
+void	ft_free_split(char **p)
 {
-	perror("command not found\n");
-	exit(127);
-}
+	int	i;
 
-void	error_file(void)
-{
-	perror("pipex: input");
-	exit(0);
-}
-
-void	error_premission(void)
-{
-	perror("Permission denied\n");
-	exit(0);
-}
-
-void	error_pipe(void)
-{
-	perror("Pipe error\n");
-	exit(0);
-}
-
-void	error_pid(void)
-{
-	perror("Pid error\n");
-	exit(0);
+	i = 0;
+	while (p[i])
+		free(p[i++]);
+	free(p);
 }
