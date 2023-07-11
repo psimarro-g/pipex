@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:20:34 by psimarro          #+#    #+#             */
-/*   Updated: 2023/02/06 10:45:08 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/07/11 20:29:24 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	command(char *argv, char **envm)
 		ft_perror("Empty command", 0);
 	cmd = ft_q_split(argv, ' ');
 	if (!envm[0])
-		ft_perror("Environment error", 1);
+		ft_perror("Environment error", 0);
 	file_path = f_pathes(cmd[0], envm);
 	if (execve(file_path, cmd, envm) == -1)
 		error_cmd();

@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 20:17:59 by psimarro          #+#    #+#             */
-/*   Updated: 2023/02/06 09:22:29 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/07/11 21:20:46 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ char	**ft_q_split(char const *s, char c)
 		if ((s[t.end] == '\'' || s[t.end] == '\"'))
 			get_quotes(s, &t, c);
 		ret[i++] = ft_substr(s, t.start, t.end - t.start);
+		if (ret[i - 1] == NULL)
+		{
+			ft_free_split(ret);
+			return (NULL);
+		}
 		if (s[t.end])
 			t.end++;
 		while (s[t.end] && s[t.end] == c)

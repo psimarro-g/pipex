@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:17:18 by psimarro          #+#    #+#             */
-/*   Updated: 2023/02/06 09:09:00 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/07/11 18:31:02 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static void	child_process(char *argv, char **envm)
 	{
 		close(fd[1]);
 		dup2(fd[0], 0);
-		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -85,6 +84,7 @@ int	main(int argc, char **argv, char **envm)
 	int	files[2];
 
 	get_args(argc, argv);
+	i = 1;
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 	{
 		i = 3;
