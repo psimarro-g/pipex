@@ -1,50 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   error2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/14 17:19:25 by psimarro          #+#    #+#             */
-/*   Updated: 2023/07/30 17:04:41 by psimarro         ###   ########.fr       */
+/*   Created: 2023/07/30 17:04:13 by psimarro          #+#    #+#             */
+/*   Updated: 2023/07/30 17:04:54 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-void	error_cmd(char *cmd)
+void	arg_err(void)
 {
-	char	*s;
-
-	s = ft_strjoin("pipex: ", cmd);
-	cmd = ft_strjoin(s, ": command not found\n");
-	write(2, cmd, ft_strlen(cmd));
-	free(s);
-	free(cmd);
+	perror("Error: Bad argument\n");
+	write(1, "input: ./pipex infile <cmd1> <cmd2> <...> outfile\n", 49);
+	write(1, "./pipex here_doc <LIMITER> <cmd> <cmd1> <...> file\n", 51);
 	exit(127);
 }
 
-void	error_file(void)
+void	ft_perror(char *str, int exit_code)
 {
-	write(1, "       0\n", 9);
-	perror("pipex: input");
-	exit(0);
-}
-
-void	error_premission(void)
-{
-	perror("Permission denied\n");
-	exit(0);
-}
-
-void	error_pipe(void)
-{
-	perror("Pipe error\n");
-	exit(0);
-}
-
-void	error_pid(void)
-{
-	perror("Pid error\n");
-	exit(0);
+	perror(str);
+	exit(exit_code);
 }

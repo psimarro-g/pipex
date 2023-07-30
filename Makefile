@@ -6,7 +6,7 @@
 #    By: psimarro <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/27 18:51:21 by psimarro          #+#    #+#              #
-#    Updated: 2023/01/26 11:44:32 by psimarro         ###   ########.fr        #
+#    Updated: 2023/07/30 17:04:08 by psimarro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ NAME = pipex
 # **************************************************************************** #
 
 CC 		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g3 -fsanitize=address -glldb
+CFLAGS	= -Wall -Wextra -Werror
 RM		= rm -f
 
 # **************************************************************************** #
@@ -34,7 +34,7 @@ RM		= rm -f
 # **************************************************************************** #
 
 SRC_DIR				=	src/
-SRC =	pipex.c utils.c error.c q_split.c
+SRC =	pipex.c utils.c error.c error2.c q_split.c
 
 OBJ_DIR				=	obj/
 OBJ					= 	$(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))

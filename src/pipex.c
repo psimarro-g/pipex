@@ -6,7 +6,7 @@
 /*   By: psimarro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 17:17:18 by psimarro          #+#    #+#             */
-/*   Updated: 2023/07/11 18:31:02 by psimarro         ###   ########.fr       */
+/*   Updated: 2023/07/30 17:16:47 by psimarro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,15 @@ static void	child_process(char *argv, char **envm)
 	}
 }
 
+static void	last_child(int argc, char **argv, char **envm, int files[2])
+{
+	dup2(files[1], 1);
+	command(argv[argc - 2], envm);
+	close(files[1]);
+	if (!(ft_strncmp(argv[1], "here_doc", 8) == 0))
+		close(files[0]);
+}
+
 static void	here_doc(char *limiter, int argc)
 {
 	pid_t	id;
@@ -70,14 +79,6 @@ static void	here_doc(char *limiter, int argc)
 		parent_process_hd(fd);
 }
 
-static void	get_args(int argc, char **argv)
-{
-	if (argc < 5)
-		arg_err();
-	if (ft_strncmp(argv[1], "/dev/urandom", ft_strlen(argv[1])) == 0)
-		arg_err();
-}
-
 int	main(int argc, char **argv, char **envm)
 {
 	int	i;
@@ -95,15 +96,12 @@ int	main(int argc, char **argv, char **envm)
 	{
 		i = 2;
 		files[1] = open_file(argv[argc - 1], 1);
+		dup2(files[1], 1);
 		files[0] = open_file(argv[1], 2);
 		dup2(files[0], 0);
 	}
 	while (i < argc - 2)
 		child_process(argv[i++], envm);
-	dup2(files[1], 1);
-	command(argv[argc - 2], envm);
-	close(files[1]);
-	if (!(ft_strncmp(argv[1], "here_doc", 8) == 0))
-		close(files[0]);
+	last_child(argc, argv, envm, files);
 	return (0);
 }
